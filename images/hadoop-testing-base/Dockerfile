@@ -55,6 +55,12 @@ COPY --chown=testuser ./testuser /home/testuser
 # Revert to root permissions for rest of file
 USER root
 
+# Install fixuid
+RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.4-linux-amd64.tar.gz | tar -C /usr/local/bin -xzf - \
+    && chown root:root /usr/local/bin/fixuid \
+    && chmod 4755 /usr/local/bin/fixuid \
+    && echo "root ALL=(ALL:ALL) NOPASSWD: /usr/local/bin/fixuid" >> /etc/sudoers
+
 # Copy over files
 COPY ./files /
 

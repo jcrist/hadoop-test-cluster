@@ -38,6 +38,9 @@ services:
   edge:
     image: '${HADOOP_TESTING_IMAGE}'
     user: root
+    environment:
+      - HADOOP_TESTING_FIXUID=${HADOOP_TESTING_FIXUID:-1000}
+      - HADOOP_TESTING_FIXGID=${HADOOP_TESTING_FIXGID:-1000}
     command: supervisord -c /etc/edge.supervisord.conf
     container_name: edge
     hostname: edge

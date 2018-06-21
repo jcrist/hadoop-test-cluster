@@ -103,6 +103,9 @@ Options:
 
     echo "Starting up $CLUSTER_TYPE cluster"
 
+    export HADOOP_TESTING_FIXUID="$(id -u)"
+    export HADOOP_TESTING_FIXGID="$(id -g)"
+
     if [ -z ${workdir+x} ]; then
         docker-compose \
             -f "${BASH_SOURCE%/*}/docker-compose.yml" \
