@@ -40,8 +40,6 @@ RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
 RUN useradd -m testuser
 USER testuser
 
-RUN mkdir /home/testuser/workdir
-
 RUN curl https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
     && /bin/bash /tmp/miniconda.sh -b -p /home/testuser/miniconda \
     && rm /tmp/miniconda.sh \
