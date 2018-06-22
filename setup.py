@@ -25,6 +25,6 @@ setup(name='hadoop-test-cluster',
                                             'krb5.conf']},
       entry_points='''
         [console_scripts]
-        hcluster=hadoop_test_cluster.cli:main
+        htcluster=hadoop_test_cluster.cli:main
       ''',
       zip_safe=False)
