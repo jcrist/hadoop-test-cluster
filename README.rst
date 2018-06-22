@@ -1,10 +1,14 @@
 Hadoop Test Clusters
 ====================
 
-|pypi|
+|pypi| |base| |kerberos|
 
 .. |pypi| image:: https://img.shields.io/pypi/v/hadoop-test-cluster.svg
    :target: https://pypi.org/project/hadoop-test-cluster/
+.. |base| image:: https://img.shields.io/docker/pulls/jcrist/hadoop-testing-base.svg
+   :target: https://hub.docker.com/r/jcrist/hadoop-testing-base/
+.. |kerberos| image:: https://img.shields.io/docker/pulls/jcrist/hadoop-testing-kerberos.svg
+   :target: https://hub.docker.com/r/jcrist/hadoop-testing-kerberos/
 
 A dockerized setup for testing code on a hadoop cluster.
 
