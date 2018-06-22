@@ -36,7 +36,7 @@ which can be found at:
 
 .. code-block:: console
 
-    docker-machine inspect --format {{.Driver.IPAddress}})
+    $ docker-machine inspect --format {{.Driver.IPAddress}})
 
 - NameNode RPC: 9000
 - NameNode Webui: 50070
@@ -79,35 +79,35 @@ Starting a cluster
 
 .. code-block:: console
 
-    htcluster startup --kind CLUSTER_TYPE
+    $ htcluster startup --kind CLUSTER_TYPE
 
 Starting a cluster, mounting the current directory to ~/workdir
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-    htcluster startup --kind CLUSTER_TYPE --mount .:workdir
+    $ htcluster startup --kind CLUSTER_TYPE --mount .:workdir
 
 Login to the edge node
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-    htcluster login
+    $ htcluster login
 
 Run a commmand as the user on the edge node
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-    htcluster exec -- myscript.sh some other args
+    $ htcluster exec -- myscript.sh some other args
 
 Shutdown the cluster
 ~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-    htcluster shutdown
+    $ htcluster shutdown
 
 
 Authenticating with Kerberos from outside Docker
@@ -126,7 +126,7 @@ doable, but takes a few steps:
       # Add a line to /etc/hosts pointing master.example.com to your docker-machine
       # driver ip address.
       # Note that you probably need to run this command as a super user.
-      echo "$(docker-machine inspect --format {{.Driver.IPAddress}})  master.example.com" >> /etc/hosts
+      $ echo "$(docker-machine inspect --format {{.Driver.IPAddress}})  master.example.com" >> /etc/hosts
 
 2. You must have ``kinit`` installed locally. You may already have it, otherwise
    it's available through most package managers.
@@ -137,13 +137,13 @@ doable, but takes a few steps:
 
    .. code-block:: console
 
-      eval $(htcluster kerbenv)
+      $ eval $(htcluster kerbenv)
 
 4. At this point you should be able to kinit as testuser:
 
    .. code-block:: console
 
-      kinit testuser@EXAMPLE.COM
+      $ kinit testuser@EXAMPLE.COM
 
 5. To access kerberos secured pages in your browser you'll need to do a bit of
    (simple) configuration. See [this documentation from
@@ -162,7 +162,7 @@ doable, but takes a few steps:
 
      .. code-block:: console
 
-        kinit -S HTTP/master.example.com testuser
+        $ kinit -S HTTP/master.example.com testuser
 
    - Use ``curl`` to authenticate the first time, at which point you'll already
      have the proper tickets in your cache, and the browser authentication will
