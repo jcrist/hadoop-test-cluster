@@ -1,4 +1,4 @@
-# Hadoop Docker Images
+# Hadoop Test Clusters
 
 For testing purposes, infrastructure for setting up a mini hadoop cluster using
 docker is provided here. Two setups are provided:
@@ -44,65 +44,61 @@ docker-machine inspect --format {{.Driver.IPAddress}})
 - DataNode Webui: 50075
 - NodeManager Webui: 8042
 
-## The `hcluster` script
+## The `hcluster` commandline tool
 
-To work with either cluster, please use the `hcluster` convenience script. This
-is a thin wrapper around `docker-compose`, with utilities for quickly doing
-most common actions.
+To work with either cluster, please use the `hcluster` tool. This is a thin
+wrapper around `docker-compose`, with utilities for quickly doing most common
+actions.
 
 ```
-$ ./hcluster --help
-usage: hcluster [-h] command ...
+$ hcluster --help
+usage: hcluster [--help] [--version] command ...
 
-Helper script for working with dockerized hadoop clusters.
+Manage hadoop test clusters
 
-Commands:
-    startup         Start up the cluster
-    login           Login to one of the nodes
-    shutdown        Shutdown the cluster
-    compose         Forward commands to underlying docker-compose call
-    kerbenv         Output environment variables to setup kerberos locally
+positional arguments:
+  command
+    startup   Start up a hadoop cluster.
+    login     Login to a node in the cluster.
+    exec      Execute a command on the node as a user
+    shutdown  Shutdown the cluster and remove the containers.
+    compose   Forward commands to docker-compose
+    kerbenv   Output environment variables to setup kerberos locally. Intended
+              use is to eval the output in bash: eval $(hcluster kerbenv)
 
-Additionally, the following commands are aliases for
-
-    hcluster compose base COMMAND ARGS...
-
-since they work fine regardless of which cluster is running.
-
-Aliases:
-    kill            Kill containers
-    logs            View output from containers
-    pause           Pause services
-    ps              List containers
-    restart         Restart services
-    start           Start services
-    stop            Stop services
-    top             Display the running processes
-    unpause         Unpause services
+optional arguments:
+  --help, -h  Show this help message then exit
+  --version   Show version then exit
 ```
 
 ### Starting a cluster
 
 ```
-./hcluster startup CLUSTER_TYPE
+hcluster startup --kind CLUSTER_TYPE
 ```
 
-### Starting a cluster, mounting the java source as a working directory
+### Starting a cluster, mounting the current directory to ~/workdir
 
 ```
-./hcluster startup CLUSTER_TYPE --workdir ../../java/
+hcluster startup --kind CLUSTER_TYPE --mount .:workdir
 ```
 
 ### Login to the edge node
 
 ```
-./hcluster login
+hcluster login
+```
+
+### Run a commmand as the user on the edge node
+
+```
+hcluster exec -- myscript.sh some other args
 ```
 
 ### Shutdown the cluster
 
 ```
-./hcluster shutdown
+hcluster shutdown
 ```
 
 ## Authenticating with Kerberos from outside Docker
@@ -130,7 +126,7 @@ doable, but takes a few steps:
    command to do this:
 
    ```
-   eval $(./hcluster kerbenv)
+   eval $(hcluster kerbenv)
    ```
 
 4. At this point you should be able to kinit as testuser:
