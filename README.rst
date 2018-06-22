@@ -6,6 +6,26 @@ Hadoop Test Clusters
 .. |pypi| image:: https://img.shields.io/pypi/v/hadoop-test-cluster.svg
    :target: https://pypi.org/project/hadoop-test-cluster/
 
+A dockerized setup for testing code on a hadoop cluster.
+
+Installation
+------------
+
+``hadoop-test-cluster`` is available on PyPI:
+
+.. code-block:: console
+
+    $ pip install hadoop-test-cluster
+
+You can also install from source on github:
+
+.. code-block:: console
+
+    $ pip install git+https://github.com/jcrist/hadoop-test-cluster.git
+
+Overview
+--------
+
 For testing purposes, infrastructure for setting up a mini hadoop cluster using
 docker is provided here. Two setups are provided:
 
@@ -73,7 +93,7 @@ actions.
         shutdown  Shutdown the cluster and remove the containers.
         compose   Forward commands to docker-compose
         kerbenv   Output environment variables to setup kerberos locally. Intended
-                use is to eval the output in bash: eval $(htcluster kerbenv)
+                  use is to eval the output in bash: eval $(htcluster kerbenv)
 
     optional arguments:
     --help, -h  Show this help message then exit
