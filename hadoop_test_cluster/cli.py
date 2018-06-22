@@ -127,16 +127,16 @@ def map_directories(directories):
         yield []
 
 
-hcluster = argparse.ArgumentParser(prog="hcluster",
-                                   description="Manage hadoop test clusters",
-                                   add_help=False)
-add_help(hcluster)
-hcluster.add_argument("--version", action=_VersionAction,
-                      version='%(prog)s ' + __version__,
-                      help="Show version then exit")
-hcluster.set_defaults(func=lambda: fail(hcluster.format_usage(), prefix=False))
-hcluster_subs = hcluster.add_subparsers(metavar='command', dest='command')
-hcluster_subs.required = True
+htcluster = argparse.ArgumentParser(prog="htcluster",
+                                    description="Manage hadoop test clusters",
+                                    add_help=False)
+add_help(htcluster)
+htcluster.add_argument("--version", action=_VersionAction,
+                       version='%(prog)s ' + __version__,
+                       help="Show version then exit")
+htcluster.set_defaults(func=lambda: fail(htcluster.format_usage(), prefix=False))
+htcluster_subs = htcluster.add_subparsers(metavar='command', dest='command')
+htcluster_subs.required = True
 
 kind = arg('--kind', default='base',
            help=('The kind of hadoop cluster to start. Either `base` or '
@@ -157,13 +157,13 @@ def parse_kind(kind):
         fail("--kind must be either `base` or `kerberos`")
 
 
-@subcommand(hcluster_subs,
+@subcommand(htcluster_subs,
             'startup', 'Start up a hadoop cluster.',
             kind,
             arg('--mount', '-m', action='append',
                 help=('Mount directory `source` to `~/dest` by passing '
                       '`--mount source:dest`. May be passed multiple times')))
-def hcluster_startup(kind, mount=()):
+def htcluster_startup(kind, mount=()):
     kind = kind.lower()
     image = parse_kind(kind)
 
@@ -179,11 +179,11 @@ def hcluster_startup(kind, mount=()):
         dispatch_and_exit(command, env)
 
 
-@subcommand(hcluster_subs,
+@subcommand(htcluster_subs,
             'login', "Login to a node in the cluster.",
             user,
             service)
-def hcluster_login(user, service):
+def htcluster_login(user, service):
     env = dict(HADOOP_TESTING_IMAGE='jcrist/hadoop-testing-base')
     command = ['docker-compose', '-f', COMPOSE_FILE,
                'exec', '-u', user, service,
@@ -191,10 +191,10 @@ def hcluster_login(user, service):
     dispatch_and_exit(command, env)
 
 
-@subcommand(hcluster_subs,
+@subcommand(htcluster_subs,
             'exec', "Execute a command on the node as a user",
             user, service, cmd)
-def hcluster_exec(user, service, cmd=None):
+def htcluster_exec(user, service, cmd=None):
     env = dict(HADOOP_TESTING_IMAGE='jcrist/hadoop-testing-base')
     command = ['docker-compose', '-f', COMPOSE_FILE,
                'exec', '-u', user, service,
@@ -203,20 +203,20 @@ def hcluster_exec(user, service, cmd=None):
     dispatch_and_exit(command, env)
 
 
-@subcommand(hcluster_subs,
+@subcommand(htcluster_subs,
             'shutdown', "Shutdown the cluster and remove the containers.")
-def hcluster_shutdown():
+def htcluster_shutdown():
     env = dict(HADOOP_TESTING_IMAGE='jcrist/hadoop-testing-base')
     command = ['docker-compose', '-f', COMPOSE_FILE, 'down']
     print("Shutting down cluster...")
     dispatch_and_exit(command, env)
 
 
-@subcommand(hcluster_subs,
+@subcommand(htcluster_subs,
             'compose',
             "Forward commands to docker-compose",
             kind, cmd)
-def hcluster_compose(kind, cmd):
+def htcluster_compose(kind, cmd):
     image = parse_kind(kind.lower())
     env = dict(HADOOP_TESTING_IMAGE=image)
     command = ['docker-compose', '-f', COMPOSE_FILE]
@@ -224,17 +224,17 @@ def hcluster_compose(kind, cmd):
     dispatch_and_exit(command, env)
 
 
-@subcommand(hcluster_subs,
+@subcommand(htcluster_subs,
             'kerbenv',
             ("Output environment variables to setup kerberos locally.\n\n"
              "Intended use is to eval the output in bash:\n\n"
-             "eval $(hcluster kerbenv)"))
-def hcluster_kerbenv():
+             "eval $(htcluster kerbenv)"))
+def htcluster_kerbenv():
     print("export KRB5_CONFIG='%s'" % KRB5_CONF)
 
 
 def main(args=None):
-    kwargs = vars(hcluster.parse_args(args=args))
+    kwargs = vars(htcluster.parse_args(args=args))
     kwargs.pop('command', None)  # Drop unnecessary `command` arg
     func = kwargs.pop('func')
     try:

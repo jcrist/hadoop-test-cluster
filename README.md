@@ -44,15 +44,15 @@ docker-machine inspect --format {{.Driver.IPAddress}})
 - DataNode Webui: 50075
 - NodeManager Webui: 8042
 
-## The `hcluster` commandline tool
+## The `htcluster` commandline tool
 
-To work with either cluster, please use the `hcluster` tool. This is a thin
+To work with either cluster, please use the `htcluster` tool. This is a thin
 wrapper around `docker-compose`, with utilities for quickly doing most common
 actions.
 
 ```
-$ hcluster --help
-usage: hcluster [--help] [--version] command ...
+$ htcluster --help
+usage: htcluster [--help] [--version] command ...
 
 Manage hadoop test clusters
 
@@ -64,7 +64,7 @@ positional arguments:
     shutdown  Shutdown the cluster and remove the containers.
     compose   Forward commands to docker-compose
     kerbenv   Output environment variables to setup kerberos locally. Intended
-              use is to eval the output in bash: eval $(hcluster kerbenv)
+              use is to eval the output in bash: eval $(htcluster kerbenv)
 
 optional arguments:
   --help, -h  Show this help message then exit
@@ -74,31 +74,31 @@ optional arguments:
 ### Starting a cluster
 
 ```
-hcluster startup --kind CLUSTER_TYPE
+htcluster startup --kind CLUSTER_TYPE
 ```
 
 ### Starting a cluster, mounting the current directory to ~/workdir
 
 ```
-hcluster startup --kind CLUSTER_TYPE --mount .:workdir
+htcluster startup --kind CLUSTER_TYPE --mount .:workdir
 ```
 
 ### Login to the edge node
 
 ```
-hcluster login
+htcluster login
 ```
 
 ### Run a commmand as the user on the edge node
 
 ```
-hcluster exec -- myscript.sh some other args
+htcluster exec -- myscript.sh some other args
 ```
 
 ### Shutdown the cluster
 
 ```
-hcluster shutdown
+htcluster shutdown
 ```
 
 ## Authenticating with Kerberos from outside Docker
@@ -122,11 +122,11 @@ doable, but takes a few steps:
    it's available through most package managers.
 
 3. You need to tell kerberos where the `krb5.conf` is for this domain. This is
-   done with an environment variable. To make this easy, `hcluster` has a
+   done with an environment variable. To make this easy, `htcluster` has a
    command to do this:
 
    ```
-   eval $(hcluster kerbenv)
+   eval $(htcluster kerbenv)
    ```
 
 4. At this point you should be able to kinit as testuser:
