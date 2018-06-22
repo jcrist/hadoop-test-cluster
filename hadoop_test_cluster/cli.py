@@ -137,9 +137,12 @@ htcluster.set_defaults(func=lambda: fail(htcluster.format_usage(), prefix=False)
 htcluster_subs = htcluster.add_subparsers(metavar='command', dest='command')
 htcluster_subs.required = True
 
-kind = arg('--kind', default='base',
-           help=('The kind of hadoop cluster to start. Either `base` or '
-                 '`kerberos`'))
+image = arg('--image', default='base',
+            help=('The docker image to use to start. Either `base`, '
+                  '`kerberos`, or the name of a custom image. Version '
+                  'tags are supported in the form of `name:version`. By '
+                  'default the image matching the version of `htcluster` '
+                  'will be used.'))
 user = arg("--user", "-u", default='testuser',
            help="The user to login as. Default is 'testuser'.")
 service = arg("--service", "-s", default="edge",
@@ -147,24 +150,29 @@ service = arg("--service", "-s", default="edge",
 cmd = arg('cmd', nargs='+', help="The command to execute")
 
 
-def parse_kind(kind):
-    if kind == 'base':
-        return 'jcrist/hadoop-testing-base'
-    elif kind == 'kerberos':
-        return 'jcrist/hadoop-testing-kerberos'
-    else:
-        fail("--kind must be either `base` or `kerberos`")
+_image_lookup = {'base': 'jcrist/hadoop-testing-base',
+                 'kerberos': 'jcrist/hadoop-testing-kerberos'}
+
+
+def parse_image(image):
+    if ':' in image:
+        image, version = image.split(':', 1)
+        image = _image_lookup.get(image, image)
+        return '%s:%s' % (image, version)
+    elif image in _image_lookup:
+        return '%s:%s' % (_image_lookup[image], __version__)
+    return image
 
 
 @subcommand(htcluster_subs,
             'startup', 'Start up a hadoop cluster.',
-            kind,
+            image,
             arg('--mount', '-m', action='append',
                 help=('Mount directory `source` to `~/dest` by passing '
                       '`--mount source:dest`. May be passed multiple times')))
-def htcluster_startup(kind, mount=()):
-    kind = kind.lower()
-    image = parse_kind(kind)
+def htcluster_startup(image, mount=()):
+    image = image.lower()
+    image = parse_image(image)
 
     env = dict(HADOOP_TESTING_FIXUID=str(os.getuid()),
                HADOOP_TESTING_FIXGID=str(os.getgid()),
@@ -174,7 +182,7 @@ def htcluster_startup(kind, mount=()):
     with map_directories(mount) as extra_args:
         command.extend(extra_args)
         command.extend(['up', '-d'])
-        print("Starting a %s cluster..." % kind)
+        print("Starting cluster with image %s ..." % image)
         dispatch_and_exit(command, env)
 
 
@@ -214,9 +222,9 @@ def htcluster_shutdown():
 @subcommand(htcluster_subs,
             'compose',
             "Forward commands to docker-compose",
-            kind, cmd)
-def htcluster_compose(kind, cmd):
-    image = parse_kind(kind.lower())
+            image, cmd)
+def htcluster_compose(image, cmd):
+    image = parse_image(image.lower())
     env = dict(HADOOP_TESTING_IMAGE=image)
     command = ['docker-compose', '-f', COMPOSE_FILE]
     command.extend(cmd)

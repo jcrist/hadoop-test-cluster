@@ -104,14 +104,14 @@ Starting a cluster
 
 .. code-block:: console
 
-    $ htcluster startup --kind CLUSTER_TYPE
+    $ htcluster startup --image base
 
 Starting a cluster, mounting the current directory to ~/workdir
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-    $ htcluster startup --kind CLUSTER_TYPE --mount .:workdir
+    $ htcluster startup --image base --mount .:workdir
 
 Login to the edge node
 ~~~~~~~~~~~~~~~~~~~~~~
