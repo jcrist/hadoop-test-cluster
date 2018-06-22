@@ -9,8 +9,7 @@ import tempfile
 import traceback
 from contextlib import contextmanager
 
-
-__version__ = '0.0.1'
+from . import __version__
 
 
 _this_dir = os.path.abspath(os.path.dirname(os.path.relpath(__file__)))
