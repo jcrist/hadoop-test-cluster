@@ -1,6 +1,11 @@
 Hadoop Test Clusters
 ====================
 
+|pypi|
+
+.. |pypi| image:: https://img.shields.io/pypi/v/hadoop-test-cluster.svg
+   :target: https://pypi.org/project/hadoop-test-cluster/
+
 For testing purposes, infrastructure for setting up a mini hadoop cluster using
 docker is provided here. Two setups are provided:
 
