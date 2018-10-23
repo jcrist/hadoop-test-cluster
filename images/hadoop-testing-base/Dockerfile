@@ -65,7 +65,11 @@ COPY ./files /
 # Configure and setup hadoop
 RUN /root/setup-hadoop.sh
 
-ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.171-8.b10.el7_5.x86_64/jre/
+# Create a few more accounts to test proxyuser support
+RUN useradd -m alice
+RUN useradd -m bob
+
+ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk
 ENV LIBHDFS3_CONF /etc/hadoop/conf/hdfs-site.xml
 ENV HADOOP_CONF_DIR /etc/hadoop/conf
 ENV HADOOP_HOME /usr/lib/hadoop

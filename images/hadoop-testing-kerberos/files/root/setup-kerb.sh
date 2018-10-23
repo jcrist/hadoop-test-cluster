@@ -24,5 +24,7 @@ kdb5_util create -s -P testpass \
 && create_keytabs worker \
 && kadmin.local -q "addprinc -pw adminpass admin/admin" \
 && kadmin.local -q "addprinc -pw testpass testuser" \
+&& kadmin.local -q "addprinc -pw testpass alice" \
+&& kadmin.local -q "addprinc -pw testpass bob" \
 && kadmin.local -q "xst -norandkey -k /home/testuser/testuser.keytab testuser" \
 && chown testuser:testuser /home/testuser/testuser.keytab

@@ -44,7 +44,11 @@ hdfs dfs -mkdir -p /tmp \
 && hdfs dfs -chmod -R 1777 /user/history \
 && hdfs dfs -chown mapred:hadoop /user/history \
 && hdfs dfs -mkdir -p /user/testuser \
-&& hdfs dfs -chown testuser /user/testuser
+&& hdfs dfs -chown testuser /user/testuser \
+&& hdfs dfs -mkdir -p /user/alice \
+&& hdfs dfs -chown alice /user/alice \
+&& hdfs dfs -mkdir -p /user/bob \
+&& hdfs dfs -chown bob /user/bob
 
 exit_code=$?
 if [[ $exit_code != 0 ]]; then
