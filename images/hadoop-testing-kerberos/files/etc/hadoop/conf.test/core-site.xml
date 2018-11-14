@@ -21,6 +21,16 @@
     </property>
 
     <property>
+        <name>hadoop.proxyuser.testuser.hosts</name>
+        <value>*</value>
+    </property>
+
+    <property>
+        <name>hadoop.proxyuser.testuser.users</name>
+        <value>alice</value>
+    </property>
+
+    <property>
         <name>hadoop.security.authentication</name>
         <value>kerberos</value>
     </property>
