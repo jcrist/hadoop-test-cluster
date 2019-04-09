@@ -22,7 +22,7 @@ create_keytabs() {
 kdb5_util create -s -P testpass \
 && create_keytabs master \
 && create_keytabs worker \
-&& kadmin.local -q "addprinc -pw adminpass admin/admin" \
+&& kadmin.local -q "addprinc -pw adminpass root/admin" \
 && kadmin.local -q "addprinc -pw testpass testuser" \
 && kadmin.local -q "addprinc -pw testpass alice" \
 && kadmin.local -q "addprinc -pw testpass bob" \

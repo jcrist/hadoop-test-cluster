@@ -45,3 +45,6 @@ services:
     container_name: edge
     hostname: edge
     domainname: example.com
+    ports:
+      - 8888:8888  # jupyter or other things, as needed
+      - 8786:8786
