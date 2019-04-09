@@ -66,6 +66,11 @@
     </property>
 
     <property>
+      <name>yarn.resourcemanager.scheduler.class</name>
+      <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler</value>
+    </property>
+
+    <property>
         <name>yarn.resourcemanager.keytab</name>
         <value>/etc/hadoop/conf/master-keytabs/yarn.keytab</value>
     </property>
@@ -84,7 +89,7 @@
         <name>yarn.nodemanager.principal</name>
         <value>yarn/worker.example.com@EXAMPLE.COM</value>
     </property>
-    
+
     <property>
         <name>yarn.nodemanager.container-executor.class</name>
         <value>org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor</value>
