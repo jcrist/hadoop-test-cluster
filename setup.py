@@ -13,7 +13,7 @@ if os.path.exists(krb5_conf):
 
 
 setup(name='hadoop-test-cluster',
-      version='0.0.4',
+      version='0.0.5',
       url="https://github.com/jcrist/hadoop-test-cluster",
       maintainer='Jim Crist',
       maintainer_email='jiminy.crist@gmail.com',
