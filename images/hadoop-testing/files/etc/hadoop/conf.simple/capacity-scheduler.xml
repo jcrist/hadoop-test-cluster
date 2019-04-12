@@ -18,6 +18,11 @@
     <value>apples,bananas,oranges</value>
   </property>
 
+  <property>
+    <name>yarn.scheduler.capacity.maximum-am-resource-percent</name>
+    <value>0.75</value>
+  </property>
+
   <!-- root.default -->
   <property>
     <name>yarn.scheduler.capacity.root.default.capacity</name>

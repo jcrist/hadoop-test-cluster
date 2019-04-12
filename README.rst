@@ -1,14 +1,14 @@
 Hadoop Test Clusters
 ====================
 
-|pypi| |base| |kerberos|
+|pypi| |cdh5| |cdh6|
 
 .. |pypi| image:: https://img.shields.io/pypi/v/hadoop-test-cluster.svg
    :target: https://pypi.org/project/hadoop-test-cluster/
-.. |base| image:: https://img.shields.io/docker/pulls/jcrist/hadoop-testing-base.svg
-   :target: https://hub.docker.com/r/jcrist/hadoop-testing-base/
-.. |kerberos| image:: https://img.shields.io/docker/pulls/jcrist/hadoop-testing-kerberos.svg
-   :target: https://hub.docker.com/r/jcrist/hadoop-testing-kerberos/
+.. |cdh5| image:: https://img.shields.io/docker/pulls/jcrist/hadoop-testing-cdh5.svg
+   :target: https://hub.docker.com/r/jcrist/hadoop-testing-cdh5/
+.. |cdh6| image:: https://img.shields.io/docker/pulls/jcrist/hadoop-testing-cdh6.svg
+   :target: https://hub.docker.com/r/jcrist/hadoop-testing-cdh6/
 
 A dockerized setup for testing code on a hadoop cluster.
 
@@ -31,15 +31,20 @@ Overview
 --------
 
 For testing purposes, infrastructure for setting up a mini hadoop cluster using
-docker is provided here. Two setups are provided:
+docker is provided here. Two base images are provided:
 
-- ``base``: uses ``simple`` authentication (unix user permissions)
-- ``kerberos``: uses ``kerberos`` for authentication
+- ``cdh5``: provides a CDH5 installation of Hadoop 2.6
+- ``cdh6``: provides a CDH6 installation of Hadoop 3.0
+
+Both images can be run with 2 different configurations:
+
+- ``simple``: uses ``simple`` authentication (unix user permissions)
+- ``kerberos`` uses ``kerberos`` for authentication
 
 Each cluster has three containers:
 
-- One ``master`` node running the ``hdfs-namenode`` and ``yarn-resourcemanager`` (in
-  the ``kerberos`` setup, the kerberos daemons also run here).
+- One ``master`` node running the ``hdfs-namenode`` and
+  ``yarn-resourcemanager``, as well as the kerberos daemons.
 - One ``worker`` node running the ``hdfs-datanode`` and ``yarn-nodemanager``
 - One ``edge`` node for interacting with the cluster
 
@@ -106,16 +111,24 @@ actions.
 Starting a cluster
 ~~~~~~~~~~~~~~~~~~
 
+Start a CDH5 cluster with simple authentication:
+
 .. code-block:: console
 
-    $ htcluster startup --image base
+    $ htcluster startup --image cdh5 --config simple
+
+Start a CDH6 cluster with kerberos authentication
+
+.. code-block:: console
+
+    $ htcluster startup --image cdh6 --config kerberos
 
 Starting a cluster, mounting the current directory to ~/workdir
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-    $ htcluster startup --image base --mount .:workdir
+    $ htcluster startup --image cdh5 --mount .:workdir
 
 Login to the edge node
 ~~~~~~~~~~~~~~~~~~~~~~

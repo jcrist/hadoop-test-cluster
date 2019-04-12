@@ -1,4 +1,6 @@
-FROM jcrist/hadoop-testing-common
+ARG VERSION=latest
+
+FROM jcrist/hadoop-testing-common:$VERSION
 MAINTAINER jcrist
 
 # The hadoop distro version to build for
