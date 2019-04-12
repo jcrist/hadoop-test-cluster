@@ -1,10 +1,12 @@
 #!/bin/bash
 
 # Wait for fixuid to have finished
-while [[ ! -f /var/run/fixuid.ran ]]
-do
-    sleep 1
-done
+if [[ "$HADOOP_TESTING_FIXUID" != "" ]]; then
+    while [[ ! -f /var/run/fixuid.ran ]]
+    do
+        sleep 1
+    done
+fi
 
 # cd into home directory
 cd

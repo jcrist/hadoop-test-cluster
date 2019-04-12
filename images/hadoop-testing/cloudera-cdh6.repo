@@ -1,0 +1,6 @@
+[cloudera-cdh6]
+# Packages for Cloudera CDH, Version 6, on RedHat or CentOS 7 x86_64                 
+name=Cloudera CDH
+baseurl=https://archive.cloudera.com/cdh6/6.2.0/redhat7/yum/
+gpgkey=https://archive.cloudera.com/cdh6/6.2.0/redhat7/yum/RPM-GPG-KEY-cloudera
+gpgcheck = 1

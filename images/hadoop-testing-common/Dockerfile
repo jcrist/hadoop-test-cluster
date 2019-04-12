@@ -1,24 +1,12 @@
 FROM centos:centos7
 MAINTAINER jcrist
 
-# Install CDH
-RUN cd /etc/yum.repos.d/ && { curl -O https://archive.cloudera.com/cdh5/redhat/7/x86_64/cdh/cloudera-cdh5.repo ; cd -; } \
-    && rpm --import https://archive.cloudera.com/cdh5/redhat/7/x86_64/cdh/RPM-GPG-KEY-cloudera \
-    && yum install -y \
+# Install common utilities
+RUN yum install -y \
         sudo \
-        bzip2 \
         git \
+        bzip2 \
         java-1.8.0-openjdk-devel \
-        hadoop-yarn-resourcemanager \
-        hadoop-hdfs-namenode \
-        hadoop-hdfs-secondarynamenode \
-        hadoop-yarn-nodemanager \
-        hadoop-hdfs-datanode \
-        hadoop-mapreduce \
-        hadoop-mapreduce-historyserver \
-        hadoop-yarn-proxyserver \
-        hadoop-client \
-        hadoop-libhdfs \
     && yum clean all \
     && rm -rf /var/cache/yum
 
@@ -62,18 +50,6 @@ RUN curl -SsL https://github.com/boxboat/fixuid/releases/download/v0.4/fixuid-0.
 # Copy over files
 COPY ./files /
 
-# Configure and setup hadoop
-RUN /root/setup-hadoop.sh
-
 # Create a few more accounts to test proxyuser support
 RUN useradd -m alice
 RUN useradd -m bob
-
-ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk
-ENV LIBHDFS3_CONF /etc/hadoop/conf/hdfs-site.xml
-ENV HADOOP_CONF_DIR /etc/hadoop/conf
-ENV HADOOP_HOME /usr/lib/hadoop
-ENV HADOOP_COMMON_HOME /usr/lib/hadoop
-ENV HADOOP_MAPRED_HOME /usr/lib/hadoop-mapreduce
-ENV HADOOP_YARN_HOME /usr/lib/hadoop-yarn
-ENV HADOOP_HDFS_HOME /usr/lib/hadoop-hdfs

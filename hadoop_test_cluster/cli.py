@@ -46,10 +46,14 @@ class _VersionAction(argparse.Action):
         sys.exit(0)
 
 
+def warn(msg):
+    print(msg, file=sys.stderr)
+
+
 def fail(msg, prefix=True):
     if prefix:
         msg = 'Error: %s' % msg
-    print(msg, file=sys.stderr)
+    warn(msg)
     sys.exit(1)
 
 
@@ -137,12 +141,15 @@ htcluster.set_defaults(func=lambda: fail(htcluster.format_usage(), prefix=False)
 htcluster_subs = htcluster.add_subparsers(metavar='command', dest='command')
 htcluster_subs.required = True
 
-image = arg('--image', default='base',
-            help=('The docker image to use to start. Either `base`, '
-                  '`kerberos`, or the name of a custom image. Version '
+image = arg('--image', default='cdh5',
+            help=('The docker image to use to start. Either `cdh5`, '
+                  '`cdh6`, or the name of a custom image. Version '
                   'tags are supported in the form of `name:version`. By '
                   'default the image matching the version of `htcluster` '
                   'will be used.'))
+config = arg('--config', default='simple',
+             help=('The config path to use. Either `simple` or `kerberos`. '
+                   'Default is `simple`.'))
 user = arg("--user", "-u", default='testuser',
            help="The user to login as. Default is 'testuser'.")
 service = arg("--service", "-s", default="edge",
@@ -150,40 +157,60 @@ service = arg("--service", "-s", default="edge",
 cmd = arg('cmd', nargs='+', help="The command to execute")
 
 
-_image_lookup = {'base': 'jcrist/hadoop-testing-base',
-                 'base3': 'jcrist/hadoop-testing-base3',
-                 'kerberos': 'jcrist/hadoop-testing-kerberos'}
+_image_lookup = {'cdh5': 'jcrist/hadoop-testing-cdh5',
+                 'cdh6': 'jcrist/hadoop-testing-cdh6'}
+
+_legacy_image_lookup = {'base': 'simple',
+                        'kerberos': 'kerberos'}
 
 
-def parse_image(image):
+def parse_image_config(image, config):
     if ':' in image:
         image, version = image.split(':', 1)
-        image = _image_lookup.get(image, image)
-        return '%s:%s' % (image, version)
+    else:
+        version = None
+
+    if image in _legacy_image_lookup:
+        config = _legacy_image_lookup[image]
+        image = _image_lookup['cdh5']
+        warn("`--image %s` is deprecated, please use `--config %s` instead"
+             % (image, config))
+        if version != 'latest':
+            version = __version__
     elif image in _image_lookup:
-        return '%s:%s' % (_image_lookup[image], __version__)
-    return image
+        image = _image_lookup[image]
+        if version is None:
+            version = __version__
+
+    image = image if version is None else ':'.join([image, version])
+
+    config = config.lower()
+    if config not in {'simple', 'kerberos'}:
+        fail("--config must be either 'simple' or 'kerberos'")
+
+    return image, config
 
 
 @subcommand(htcluster_subs,
             'startup', 'Start up a hadoop cluster.',
             image,
+            config,
             arg('--mount', '-m', action='append',
                 help=('Mount directory `source` to `~/dest` by passing '
                       '`--mount source:dest`. May be passed multiple times')))
-def htcluster_startup(image, mount=()):
-    image = image.lower()
-    image = parse_image(image)
+def htcluster_startup(image, config, mount=()):
+    image, config = parse_image_config(image.lower(), config.lower())
 
     env = dict(HADOOP_TESTING_FIXUID=str(os.getuid()),
                HADOOP_TESTING_FIXGID=str(os.getgid()),
-               HADOOP_TESTING_IMAGE=image)
+               HADOOP_TESTING_IMAGE=image,
+               HADOOP_TESTING_CONFIG=config)
 
     command = ['docker-compose', '-f', COMPOSE_FILE]
     with map_directories(mount) as extra_args:
         command.extend(extra_args)
         command.extend(['up', '-d'])
-        print("Starting cluster with image %s ..." % image)
+        print("Starting cluster with image %s, config %s ..." % (image, config))
         dispatch_and_exit(command, env)
 
 
@@ -192,7 +219,7 @@ def htcluster_startup(image, mount=()):
             user,
             service)
 def htcluster_login(user, service):
-    env = dict(HADOOP_TESTING_IMAGE='jcrist/hadoop-testing-base')
+    env = dict(HADOOP_TESTING_IMAGE='jcrist/hadoop-testing-cdh5')
     command = ['docker-compose', '-f', COMPOSE_FILE,
                'exec', '-u', user, service,
                'bash', '--init-file', '/root/init-shell.sh']
@@ -203,7 +230,7 @@ def htcluster_login(user, service):
             'exec', "Execute a command on the node as a user",
             user, service, cmd)
 def htcluster_exec(user, service, cmd=None):
-    env = dict(HADOOP_TESTING_IMAGE='jcrist/hadoop-testing-base')
+    env = dict(HADOOP_TESTING_IMAGE='jcrist/hadoop-testing-cdh5')
     command = ['docker-compose', '-f', COMPOSE_FILE,
                'exec', '-u', user, service,
                '/root/run_command.sh']
@@ -214,7 +241,7 @@ def htcluster_exec(user, service, cmd=None):
 @subcommand(htcluster_subs,
             'shutdown', "Shutdown the cluster and remove the containers.")
 def htcluster_shutdown():
-    env = dict(HADOOP_TESTING_IMAGE='jcrist/hadoop-testing-base')
+    env = dict(HADOOP_TESTING_IMAGE='jcrist/hadoop-testing-cdh5')
     command = ['docker-compose', '-f', COMPOSE_FILE, 'down']
     print("Shutting down cluster...")
     dispatch_and_exit(command, env)
@@ -223,9 +250,9 @@ def htcluster_shutdown():
 @subcommand(htcluster_subs,
             'compose',
             "Forward commands to docker-compose",
-            image, cmd)
-def htcluster_compose(image, cmd):
-    image = parse_image(image.lower())
+            image, config, cmd)
+def htcluster_compose(image, config, cmd):
+    image, config = parse_image_config(image.lower(), config.lower())
     env = dict(HADOOP_TESTING_IMAGE=image)
     command = ['docker-compose', '-f', COMPOSE_FILE]
     command.extend(cmd)

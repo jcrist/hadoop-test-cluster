@@ -2,7 +2,7 @@
 
 create_keytabs() {
     HOST="$1.example.com"
-    KEYTABS="/etc/hadoop/conf.test/$1-keytabs"
+    KEYTABS="/etc/hadoop/conf.kerberos/$1-keytabs"
     kadmin.local -q "addprinc -randkey hdfs/$HOST@EXAMPLE.COM" \
     && kadmin.local -q "addprinc -randkey mapred/$HOST@EXAMPLE.COM" \
     && kadmin.local -q "addprinc -randkey yarn/$HOST@EXAMPLE.COM" \

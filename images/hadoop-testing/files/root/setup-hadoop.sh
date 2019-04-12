@@ -3,9 +3,10 @@
 set -ex
 
 # Configure HDFS
-cp /etc/hadoop/conf.empty/log4j.properties /etc/hadoop/conf.test/log4j.properties \
-    && alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.test 50 \
-    && alternatives --set hadoop-conf /etc/hadoop/conf.test
+ln -s /etc/hadoop/conf.empty/log4j.properties /etc/hadoop/conf.simple/log4j.properties \
+    && ln -s /etc/hadoop/conf.empty/log4j.properties /etc/hadoop/conf.kerberos/log4j.properties \
+    && alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.simple 50 \
+    && alternatives --set hadoop-conf /etc/hadoop/conf.simple
 
 # Create yarn directories with proper permissions
 mkdir -p /var/tmp/hadoop-yarn/local /var/tmp/hadoop-yarn/logs \
@@ -17,7 +18,7 @@ chown hdfs:hadoop /etc/hadoop/conf/http-secret-file
 chmod 440 /etc/hadoop/conf/http-secret-file
 
 # Format namenode
-sudo -u hdfs hdfs namenode -format -force
+sudo -E -u hdfs bash -c "hdfs namenode -format -force"
 
 # Format filesystem
 # NOTE: Even though the worker and master will be different filesystems at
@@ -26,7 +27,7 @@ sudo -u hdfs hdfs namenode -format -force
 # and easier.
 # XXX: Add to hosts to resolve name temporarily
 echo "127.0.0.1 master.example.com" >> /etc/hosts
-su -c "hdfs namenode" hdfs&
-su -c "hdfs datanode" hdfs&
-sudo -u hdfs /root/init-hdfs.sh
+sudo -E -u hdfs bash -c "hdfs namenode"&
+sudo -E -u hdfs bash -c "hdfs datanode"&
+sudo -E -u hdfs /root/init-hdfs.sh
 killall java
