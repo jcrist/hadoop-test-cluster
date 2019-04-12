@@ -47,7 +47,7 @@
 
     <property>
         <name>yarn.scheduler.minimum-allocation-mb</name>
-        <value>128</value>
+        <value>32</value>
     </property>
 
     <property>
