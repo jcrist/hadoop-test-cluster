@@ -3,6 +3,14 @@ ARG VERSION=latest
 FROM jcrist/hadoop-testing-common:$VERSION
 MAINTAINER jcrist
 
+# Install kerberos
+RUN yum install -y \
+        krb5-libs \
+        krb5-server \
+        krb5-workstation \
+    && yum clean all \
+    && rm -rf /var/cache/yum
+
 # The hadoop distro version to build for
 ARG HADOOP_TESTING_VERSION=cdh5
 
@@ -22,14 +30,6 @@ RUN yum install -y \
         hadoop-hdfs-datanode \
         hadoop-client \
         hadoop-libhdfs \
-    && yum clean all \
-    && rm -rf /var/cache/yum
-
-# Install kerberos
-RUN yum install -y \
-        krb5-libs \
-        krb5-server \
-        krb5-workstation \
     && yum clean all \
     && rm -rf /var/cache/yum
 

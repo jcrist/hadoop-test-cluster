@@ -1,4 +1,0 @@
-user: testuser
-group: testuser
-paths:
-    - /home/testuser
