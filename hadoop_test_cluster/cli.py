@@ -151,6 +151,7 @@ cmd = arg('cmd', nargs='+', help="The command to execute")
 
 
 _image_lookup = {'base': 'jcrist/hadoop-testing-base',
+                 'base3': 'jcrist/hadoop-testing-base3',
                  'kerberos': 'jcrist/hadoop-testing-kerberos'}
 
 
