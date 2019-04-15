@@ -1,0 +1,34 @@
+dist: trusty
+os: linux
+language: python
+python:
+    - "3.6"
+
+branches:
+    only:
+        - master
+
+env:
+    global:
+        - secure: "MTaSLGkmucdAlnNnhxBrYrsmtJhYW1Dqd0uSpsTqjN1JvAjzH3UdpG5lG90ODtpMSagTfnzPgwbKCiwzjRBvm9jCF/NQ87ditaG/xQjSh3/sM8XvFDXE5sCvsQj86u+/YyEi2GQ/n/99cBMAq8VDLhjII+hEOn6F3DVZt5NparWSzKsC6l5yFQwIfPOT/TsyrPFIYbuDGNjtsLv06LFMBPLd/Se2hbL45wbH3y/uJP158ENcuzLIzg2EXRYWVxy2gMYDEh44LNcxbdcSW8dLyNpyUe+E7jYxs41PhV718qw0N/QD5qw68QyR9R3fptczgVuopMjUXbOG9uykEQmbpP734EbXoY+quNxkyTEO5jEa4bvi1AW5QuFlwToC+Q1yS9k60EY1wsedhI73xxstrM0ChveF58a53JQo3PsrevDawjOx5yoZileijY/cd1D80Ysrhjii+nqlDSfmYA4q+a++h4aZmYtRV/EQqLlalQzYxOYRs9j39ILLbhhtWUaQyPj1+081zLWkccrY2vIWj1bo2n/Ih9WYnpaBv1TfECRWBn9hWRtD7eyC6p7gLfQa3Tw3eFJheyjFqH7HekiPmjE1IcyrhujaejWoc89/7D2caEPI5hSiBtLysBzmMeyOi8wxqrL2lVlKsG4eYTjKz0xy/4fu5z+DpuVyy/Y="
+
+install:
+    - |
+      set -xe
+      pip install sphinx sphinxcontrib.autoprogram doctr
+      python setup.py develop
+
+script:
+    - |
+      set -xe
+      # Build docs
+      pushd docs
+      make html
+      popd
+      # Maybe deploy documentation
+      if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_EVENT_TYPE" == "push" ]]; then
+          doctr deploy . --built-docs docs/build/html/
+      fi
+
+notifications:
+  email: false
