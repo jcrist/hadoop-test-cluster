@@ -1,0 +1,150 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Usage on Travis CI &#8212; hadoop-test-cluster 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="CLI Docs" href="cli.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="usage-on-travis-ci">
+<h1>Usage on Travis CI<a class="headerlink" href="#usage-on-travis-ci" title="Permalink to this headline">¶</a></h1>
+<p>Hadoop-test-cluster works great on Travis CI. Here we provide a brief example
+of one way to handle this.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">before_install</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+      <span class="no">set -xe</span>
+
+      <span class="no"># The docker-compose version on TravisCI currently is too old for</span>
+      <span class="no"># hadoop-test-cluster to work. Here we Upgrade docker-compose to a</span>
+      <span class="no"># newer version.</span>
+      <span class="no">sudo rm /usr/local/bin/docker-compose</span>
+      <span class="no">curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` &gt; docker-compose</span>
+      <span class="no">chmod +x docker-compose</span>
+      <span class="no">sudo mv docker-compose /usr/local/bin</span>
+
+      <span class="no"># Install hadoop-test-cluster</span>
+      <span class="no">pip install hadoop-test-cluster</span>
+
+      <span class="no"># Start the test cluster, mounting your repository on the edge node.</span>
+      <span class="no">htcluster startup --mount .:your-repo-name</span>
+
+      <span class="no">set +xe</span>
+
+<span class="nt">install</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="p p-Indicator">|</span>
+      <span class="no">set -xe</span>
+
+      <span class="no"># Install dependencies using conda</span>
+      <span class="no">htcluster exec -- conda install -y numpy pandas</span>
+
+      <span class="no"># Install dependencies using pip</span>
+      <span class="no">htcluster exec -- pip install pytest flake8</span>
+
+      <span class="no"># Build and install your package</span>
+      <span class="no">htcluster exec -- pip install -v -e ./your-repo-name</span>
+
+      <span class="no">set +xe</span>
+
+<span class="nt">script</span><span class="p">:</span>
+    <span class="c1"># Run your test suite</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">htcluster exec -- py.test -vv your-repo-name</span>
+</pre></div>
+</div>
+<p>For real repositories running this on Travis CI, see the following examples:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/jcrist/skein/blob/master/.travis.yml">skein</a></p></li>
+<li><p><a class="reference external" href="https://github.com/dask/dask-yarn/blob/master/.travis.yml">dask-yarn</a></p></li>
+<li><p><a class="reference external" href="https://github.com/jcrist/hdfscm/blob/master/.travis.yml">hdfscm</a></p></li>
+<li><p><a class="reference external" href="https://github.com/jcrist/yarnspawner/blob/master/.travis.yml">yarnspawner</a></p></li>
+<li><p><a class="reference external" href="https://github.com/martindurant/filesystem_spec/blob/master/.travis.yml">filesystem_spec</a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">hadoop-test-cluster</a></h1>
+
+
+
+<p class="blurb">A docker setup for testing software on realistic Hadoop Clusters</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=jcrist&repo=hadoop-test-cluster&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI Docs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage on Travis CI</a></li>
+</ul>
+
+<h3>Need help?</h3>
+
+<p>
+  Open an issue in the <a href="https://github.com/jcrist/hadoop-test-cluster/issues">issue tracker</a>.
+</p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Jim Crist.
+      
+      |
+      <a href="_sources/travis.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
