@@ -25,10 +25,7 @@ script:
       pushd docs
       make html
       popd
-      # Maybe deploy documentation
-      if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_EVENT_TYPE" != "pull_request" ]]; then
-          doctr deploy . --built-docs docs/build/html/
-      fi
+      doctr deploy . --built-docs docs/build/html/
 
 notifications:
   email: false
