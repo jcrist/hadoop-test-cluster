@@ -57,6 +57,6 @@ For real repositories running this on Travis CI, see the following examples:
 
 .. _skein: https://github.com/jcrist/skein/blob/master/.travis.yml
 .. _dask-yarn: https://github.com/dask/dask-yarn/blob/master/.travis.yml
-.. _yarnspawner: https://github.com/jcrist/yarnspawner/blob/master/.travis.yml
+.. _yarnspawner: https://github.com/jupyterhub/yarnspawner/blob/master/.travis.yml
 .. _hdfscm: https://github.com/jcrist/hdfscm/blob/master/.travis.yml
 .. _filesystem_spec: https://github.com/martindurant/filesystem_spec/blob/master/.travis.yml
