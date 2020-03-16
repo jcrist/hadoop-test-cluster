@@ -3,8 +3,8 @@ import hadoop_test_cluster
 
 # Project settings
 project = 'hadoop-test-cluster'
-copyright = '2018, Jim Crist'
-author = 'Jim Crist'
+copyright = '2018, Jim Crist-Harif'
+author = 'Jim Crist-Harif'
 release = version = hadoop_test_cluster.__version__
 
 source_suffix = '.rst'

@@ -13,4 +13,4 @@ Hadoop Test Cluster
 A dockerized setup for testing code on realistic hadoop clusters. See `the
 documentation`_ for more information.
 
-.. _the documentation: https://jcrist.github.io/hadoop-test-cluster/
+.. _the documentation: https://jcristharif.com/hadoop-test-cluster/
